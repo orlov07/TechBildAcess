@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { localClient } from '@/lib/localClient'
 
 const url = import.meta.env.VITE_SUPABASE_URL
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -11,7 +12,7 @@ if (!url || !anonKey) {
   )
 }
 
-export const supabase = createClient(url ?? '', anonKey ?? '', {
+const remoteClient = createClient(url ?? '', anonKey ?? '', {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -19,5 +20,9 @@ export const supabase = createClient(url ?? '', anonKey ?? '', {
     flowType: 'pkce',
   },
 })
+
+// Sem credenciais, o sistema funciona inteiramente neste navegador.
+// Mantemos a mesma interface usada nas telas para que o Supabase continue opcional.
+export const supabase: any = url && anonKey ? remoteClient : localClient
 
 export const isSupabaseConfigured = Boolean(url && anonKey)

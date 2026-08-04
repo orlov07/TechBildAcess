@@ -75,15 +75,14 @@ npm run preview
 
 ### Armazenamento local
 
-Quando as credenciais do Supabase não estão configuradas, o TechBildAcess opera
-em modo local automaticamente. Eventos, lotes, pedidos, ingressos, check-ins,
+O TechBildAcess opera em modo local por padrão. Eventos, lotes, pedidos, ingressos, check-ins,
 configurações e banners são gravados no `localStorage` do navegador deste
 computador. Use **Entrar no modo local** para acessar o painel administrativo.
 
 Esse modo é apropriado para uso offline, demonstrações e operação em uma única
 máquina/navegador. Os dados não são compartilhados entre dispositivos e podem
 ser apagados ao limpar os dados do navegador. Para acesso por várias pessoas ou
-backup centralizado, configure o Supabase normalmente.
+backup centralizado, configure o Supabase normalmente e defina `VITE_STORAGE_MODE=supabase`.
 
 ---
 

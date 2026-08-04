@@ -4,8 +4,7 @@ import { supabase } from '@/lib/supabase'
 import type { CheckinLog } from '@/lib/types'
 import { formatDateTime } from '@/lib/utils'
 import { EmptyState, PageLoader } from '@/components/ui'
-
-const SELECTED_KEY = 'tba_fiscal_event'
+import { getFiscalEvent } from '@/lib/fiscalEvent'
 
 const iconFor = (status: string) =>
   status === 'valid' ? <CheckCircle2 className="h-5 w-5 text-success" />
@@ -18,11 +17,10 @@ export default function FiscalHistory() {
 
   useEffect(() => {
     ;(async () => {
-      const raw = localStorage.getItem(SELECTED_KEY)
+      const event = getFiscalEvent()
       let query = supabase.from('checkin_logs').select('*').order('created_at', { ascending: false }).limit(100)
-      if (raw) {
-        const ev = JSON.parse(raw)
-        query = query.eq('event_id', ev.id)
+      if (event) {
+        query = query.eq('event_id', event.id)
       }
       const { data } = await query
       setLogs((data as CheckinLog[]) ?? [])

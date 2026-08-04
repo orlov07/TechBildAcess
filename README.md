@@ -60,9 +60,8 @@ O sistema tem **3 áreas**:
 # 1. Instalar dependências
 npm install
 
-# 2. Configurar variáveis de ambiente
+# 2. Configurar variáveis opcionais
 cp .env.example .env
-# preencha VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY
 
 # 3. Rodar em desenvolvimento
 npm run dev
@@ -72,6 +71,12 @@ npm run dev
 npm run build
 npm run preview
 ```
+
+### Modo demonstração temporário
+
+O projeto não envia nem persiste dados. Eventos, pedidos, ingressos, check-ins,
+configurações e imagens ficam somente na memória enquanto a página está aberta.
+Ao recarregar ou fechar a aba, tudo — inclusive o login — é apagado.
 
 ---
 

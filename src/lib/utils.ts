@@ -37,7 +37,7 @@ export function formatTime(time: string | null | undefined): string {
 }
 
 export function adminEmails(): string[] {
-  return (import.meta.env.VITE_ADMIN_EMAILS ?? '')
+  return (import.meta.env.VITE_ADMIN_EMAILS ?? 'igoraguiarviana@gmail.com')
     .split(',')
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean)

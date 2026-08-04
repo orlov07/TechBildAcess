@@ -1,20 +1,16 @@
 type Row = Record<string, any>
 
-const KEY = 'techbildacess:database:v1'
-const SESSION_KEY = 'techbildacess:session:v1'
-const FILE_PREFIX = 'techbildacess:file:'
 const tables = ['profiles', 'events', 'ticket_batches', 'coupons', 'orders', 'tickets', 'guest_list', 'staff', 'checkin_logs', 'settings']
 const uid = () => crypto.randomUUID()
 const now = () => new Date().toISOString()
 
-function database(): Record<string, Row[]> {
-  try {
-    const saved = JSON.parse(localStorage.getItem(KEY) ?? '{}')
-    return Object.fromEntries(tables.map((name) => [name, Array.isArray(saved[name]) ? saved[name] : []]))
-  } catch { return Object.fromEntries(tables.map((name) => [name, []])) }
-}
-function save(db: Record<string, Row[]>) { localStorage.setItem(KEY, JSON.stringify(db)) }
-function session() { try { return JSON.parse(localStorage.getItem(SESSION_KEY) ?? 'null') } catch { return null } }
+const memoryDatabase: Record<string, Row[]> = Object.fromEntries(tables.map((name) => [name, []]))
+let currentSession: any = null
+const memoryFiles = new Map<string, string>()
+
+function database() { return memoryDatabase }
+function save(_db: Record<string, Row[]>) { /* A sessão é propositalmente efêmera. */ }
+function session() { return currentSession }
 function localProfile() { const user = session()?.user; return user ? database().profiles.find((p) => p.auth_user_id === user.id) : undefined }
 const error = (message: string) => ({ data: null, error: { message } })
 
@@ -96,14 +92,14 @@ export const localClient = {
   auth: {
     getSession: async () => ({ data: { session: session() } }),
     onAuthStateChange: (callback: (event: string, value: any) => void) => { listeners.add(callback); return { data: { subscription: { unsubscribe: () => listeners.delete(callback) } } } },
-    signInWithOAuth: async () => { const email = (import.meta.env.VITE_ADMIN_EMAILS ?? 'igoraguiarviana@gmail.com').split(',')[0].trim().toLowerCase(); const user = { id: uid(), email, user_metadata: { full_name: 'Administrador local' } }; const value = { user }; localStorage.setItem(SESSION_KEY, JSON.stringify(value)); const db = database(); if (!db.profiles.some((p) => p.auth_user_id === user.id)) db.profiles.push({ id: uid(), auth_user_id: user.id, email, name: user.user_metadata.full_name, phone: null, cpf: null, role: 'admin', created_at: now() }); save(db); listeners.forEach((callback) => callback('SIGNED_IN', value)); return { data: { provider: 'local' }, error: null } },
-    signOut: async () => { localStorage.removeItem(SESSION_KEY); listeners.forEach((callback) => callback('SIGNED_OUT', null)); return { error: null } },
+    signInWithOAuth: async () => { const email = (import.meta.env.VITE_ADMIN_EMAILS ?? 'igoraguiarviana@gmail.com').split(',')[0].trim().toLowerCase(); const user = { id: uid(), email, user_metadata: { full_name: 'Administrador temporário' } }; const value = { user }; currentSession = value; const db = database(); if (!db.profiles.some((p) => p.auth_user_id === user.id)) db.profiles.push({ id: uid(), auth_user_id: user.id, email, name: user.user_metadata.full_name, phone: null, cpf: null, role: 'admin', created_at: now() }); save(db); listeners.forEach((callback) => callback('SIGNED_IN', value)); return { data: { provider: 'memory' }, error: null } },
+    signOut: async () => { currentSession = null; listeners.forEach((callback) => callback('SIGNED_OUT', null)); return { error: null } },
   },
   storage: { from: (_bucket: string) => ({
     upload: async (path: string, file: File) => {
       const content = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = () => reject(reader.error); reader.readAsDataURL(file) })
-      localStorage.setItem(`${FILE_PREFIX}${path}`, content); return { data: { path }, error: null }
+      memoryFiles.set(path, content); return { data: { path }, error: null }
     },
-    getPublicUrl: (path: string) => ({ data: { publicUrl: localStorage.getItem(`${FILE_PREFIX}${path}`) ?? path } }),
+    getPublicUrl: (path: string) => ({ data: { publicUrl: memoryFiles.get(path) ?? path } }),
   }) },
 }

@@ -5,8 +5,7 @@ import { CheckCircle2, XCircle, AlertTriangle, Camera, CameraOff, Keyboard, Rota
 import { supabase } from '@/lib/supabase'
 import { Button, Card, Input } from '@/components/ui'
 import { formatDateTime } from '@/lib/utils'
-
-const SELECTED_KEY = 'tba_fiscal_event'
+import { getFiscalEvent } from '@/lib/fiscalEvent'
 
 interface Result {
   status: string
@@ -41,8 +40,7 @@ export default function Checkin() {
   const lastScanRef = useRef<{ code: string; at: number }>({ code: '', at: 0 })
 
   useEffect(() => {
-    const raw = localStorage.getItem(SELECTED_KEY)
-    if (raw) setSelected(JSON.parse(raw))
+    setSelected(getFiscalEvent())
   }, [])
 
   useEffect(() => {

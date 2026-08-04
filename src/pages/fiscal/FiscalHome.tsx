@@ -6,8 +6,7 @@ import type { EventRow } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 import { EmptyState, PageLoader } from '@/components/ui'
 import { useAuth } from '@/context/AuthContext'
-
-const SELECTED_KEY = 'tba_fiscal_event'
+import { setFiscalEvent } from '@/lib/fiscalEvent'
 
 export default function FiscalHome() {
   const { isAdmin, staffEvents } = useAuth()
@@ -34,7 +33,7 @@ export default function FiscalHome() {
   }, [isAdmin, staffEvents])
 
   function select(ev: EventRow) {
-    localStorage.setItem(SELECTED_KEY, JSON.stringify({ id: ev.id, title: ev.title }))
+    setFiscalEvent({ id: ev.id, title: ev.title })
     navigate('/fiscal/checkin')
   }
 

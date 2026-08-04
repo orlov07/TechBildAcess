@@ -38,7 +38,7 @@ export default function Login() {
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-slate-100">Bem-vindo</h1>
             <p className="text-sm text-slate-400">
-              {isSupabaseConfigured ? 'Acesse com sua conta Google para comprar ingressos, gerenciar eventos ou validar entradas.' : 'Modo local ativo: os dados ficam salvos somente neste navegador.'}
+              {isSupabaseConfigured ? 'Acesse com sua conta Google para comprar ingressos, gerenciar eventos ou validar entradas.' : 'Modo demonstração: os dados existem somente até você recarregar a página.'}
             </p>
           </div>
 
@@ -47,11 +47,11 @@ export default function Login() {
               <path fill="#fff" d="M12 11v2.8h4a3.9 3.9 0 0 1-1.7 2.5v2.1h2.7A8.2 8.2 0 0 0 20 12c0-.6 0-1.2-.2-1.7H12Z" />
               <path fill="#fff" d="M12 20c2.4 0 4.4-.8 5.9-2.2l-2.9-2.2c-.8.5-1.8.9-3 .9-2.3 0-4.2-1.5-4.9-3.6H4.1v2.3A8 8 0 0 0 12 20Z" opacity=".8" />
             </svg>
-            {isSupabaseConfigured ? 'Continuar com Google' : 'Entrar no modo local'}
+            {isSupabaseConfigured ? 'Continuar com Google' : 'Entrar no modo demonstração'}
           </Button>
 
           <p className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
-            <ShieldCheck className="h-3.5 w-3.5" /> {isSupabaseConfigured ? 'Login seguro via Supabase Auth' : 'Dados persistidos no armazenamento local'}
+            <ShieldCheck className="h-3.5 w-3.5" /> {isSupabaseConfigured ? 'Login seguro via Supabase Auth' : 'Nenhum dado é salvo'}
           </p>
         </div>
         <button onClick={() => navigate('/')} className="text-sm text-slate-500 hover:text-slate-300">

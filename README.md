@@ -60,9 +60,8 @@ O sistema tem **3 áreas**:
 # 1. Instalar dependências
 npm install
 
-# 2. Opcional: configurar Supabase
+# 2. Configurar variáveis opcionais
 cp .env.example .env
-# Sem VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY, o app usa armazenamento local.
 
 # 3. Rodar em desenvolvimento
 npm run dev
@@ -73,16 +72,11 @@ npm run build
 npm run preview
 ```
 
-### Armazenamento local
+### Modo demonstração temporário
 
-O TechBildAcess opera em modo local por padrão. Eventos, lotes, pedidos, ingressos, check-ins,
-configurações e banners são gravados no `localStorage` do navegador deste
-computador. Use **Entrar no modo local** para acessar o painel administrativo.
-
-Esse modo é apropriado para uso offline, demonstrações e operação em uma única
-máquina/navegador. Os dados não são compartilhados entre dispositivos e podem
-ser apagados ao limpar os dados do navegador. Para acesso por várias pessoas ou
-backup centralizado, configure o Supabase normalmente e defina `VITE_STORAGE_MODE=supabase`.
+O projeto não envia nem persiste dados. Eventos, pedidos, ingressos, check-ins,
+configurações e imagens ficam somente na memória enquanto a página está aberta.
+Ao recarregar ou fechar a aba, tudo — inclusive o login — é apagado.
 
 ---
 
